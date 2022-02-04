@@ -26,14 +26,14 @@ async function db_query(query, params) {
     }
 }
 
-async function getPerson(id) {
-    const q = `SELECT * FROM PEOPLE WHERE ID=:1`;
+async function getSingleRow(tableName, id) {
+    const q = `SELECT * FROM ${tableName} WHERE ID=:1`;
     const params = [id];
     const result = await db_query(q, params);
     return result;
 }
 
-async function getAll(tableName) {
+async function getAllRow(tableName) {
     const q = `SELECT * FROM ${tableName}`;
     const params = [];
     const result = await db_query(q, params);
@@ -95,6 +95,6 @@ async function insertContact(
     return;
 }
 
-exports.getPerson = getPerson;
-exports.getAll = getAll;
+exports.getSingleRow = getSingleRow;
+exports.getAllRow = getAllRow;
 exports.createUser = createUser;

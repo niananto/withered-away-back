@@ -10,19 +10,21 @@ const queries = require("./queries.js");
 
 /// express ===================================
 
-router.get("/:id", async function (req, res) {
-    const personId = req.params.id;
-    return res.status(200).json(await queries.getPerson(personId));
+router.get("/api/:tableName/:id", async function (req, res) {
+    // console.log(req.params);
+    const id = req.params.id;
+    const tableName = req.params.tableName;
+    return res.status(200).json(await queries.getSingleRow(tableName, id));
 });
 
-router.get("/all/:tableName", async function (req, res) {
+router.get("/api/all/:tableName", async function (req, res) {
     const tableName = req.params.tableName;
-    console.log(req.params);
-    return res.status(200).json(await queries.getAll(tableName));
+    // console.log(req.params);
+    return res.status(200).json(await queries.getAllRow(tableName));
 });
 
 let reg = {};
-router.post("/registration/:page", async function (req, res) {
+router.post("/api/reg/:page", async function (req, res) {
     if (req.params.page == 1) {
         reg.name = req.body.firstName + " " + req.body.lastName; // any string
         reg.gender = req.body.gender; // male, female
@@ -32,8 +34,6 @@ router.post("/registration/:page", async function (req, res) {
         reg.contactPhoneNo = req.body.contactPhoneNo;
         reg.contactRelationship = req.body.contactRelationship;
         reg.contactAddress = req.body.contactAddress;
-
-        // return res.status(200).json(await queries.createUser(reg));
     } else if (req.params.page == 3) {
         reg.diseases = req.body.diseases; // list of diseases
         reg.medicines = req.body.medicines; // list of medicines
@@ -54,7 +54,7 @@ router.post("/registration/:page", async function (req, res) {
         reg.membershipId = req.body.membershipId;
 
         // insert query
-        return res.status(200).json(await queries.createUser(reg));
+        // return res.status(200).json(await queries.createUser(reg));
     }
 
     return res.status(200).json({
