@@ -21,40 +21,45 @@ router.get("/all/:tableName", async function (req, res) {
     return res.status(200).json(await queries.getAll(tableName));
 });
 
-let registration = {};
+let reg = {};
 router.post("/registration/:page", async function (req, res) {
     if (req.params.page == 1) {
-        registration.name = req.body.firstName + " " + req.body.lastName; // any string
-        registration.sex = req.body.sex; // male, female
-        registration.dateOfBirth = req.body.dateOfBirth; // DD-MON-YYYY
+        reg.name = req.body.firstName + " " + req.body.lastName; // any string
+        reg.gender = req.body.gender; // male, female
+        reg.birthday = req.body.birthday; // DD-MON-YYYY
     } else if (req.params.page == 2) {
-        registration.contactName = req.body.contactName;
-        registration.contactPhoneNo = req.body.contactPhoneNo;
-        registration.contactRelationship = req.body.contactRelationship;
-        registration.contactAddress = req.body.contactAddress;
+        reg.contactName = req.body.contactName;
+        reg.contactPhoneNo = req.body.contactPhoneNo;
+        reg.contactRelationship = req.body.contactRelationship;
+        reg.contactAddress = req.body.contactAddress;
+
+        // return res.status(200).json(await queries.createUser(reg));
     } else if (req.params.page == 3) {
-        registration.diseases = req.body.diseases; // list of diseases
-        registration.medicines = req.body.medicines; // list of medicines
-        registration.height = req.body.height;
-        registration.weight = req.body.weight;
-        registration.bloodGroup = req.body.bloodGroup;
-        registration.vaccines = req.body.vaccines; // list of vaccines
-        registration.dissabilities = req.body.dissabilities; // list
-        registration.allergies = req.body.allergies;
-        registration.healthCondition = req.body.healthCondition;
+        reg.diseases = req.body.diseases; // list of diseases
+        reg.medicines = req.body.medicines; // list of medicines
+        reg.height = req.body.height;
+        reg.weight = req.body.weight;
+        reg.bloodGroup = req.body.bloodGroup;
+        reg.vaccines = req.body.vaccines; // list of vaccines
+        reg.dissabilities = req.body.dissabilities; // list
+        reg.allergies = req.body.allergies;
+        reg.healthCondition = req.body.healthCondition;
     } else if (req.params.page == 4) {
-        registration.songs = req.body.songs; // list
-        registration.movies = req.body.movies; // list
-        registration.games = req.body.games; // list
+        reg.songs = req.body.songs; // list
+        reg.movies = req.body.movies; // list
+        reg.games = req.body.games; // list
     } else if (req.params.page == 5) {
-        registration.bankAccountNo = req.body.bankAccountNo;
-        registration.balance = req.body.balance;
-        registration.membershipId = req.body.membershipId;
+        reg.bankAccountNo = req.body.bankAccountNo;
+        reg.balance = req.body.balance;
+        reg.membershipId = req.body.membershipId;
+
+        // insert query
+        return res.status(200).json(await queries.createUser(reg));
     }
 
     return res.status(200).json({
         success: "true",
-        registration,
+        registration: reg,
     });
 });
 
