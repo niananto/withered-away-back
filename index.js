@@ -17,9 +17,8 @@ router.get("/api/:tableName/:id", async function (req, res) {
     return res.status(200).json(await queries.getSingleRow(tableName, id));
 });
 
-router.get("/api/all/:tableName", async function (req, res) {
+router.get("/api/:tableName", async function (req, res) {
     const tableName = req.params.tableName;
-    // console.log(req.params);
     return res.status(200).json(await queries.getAllRow(tableName));
 });
 
