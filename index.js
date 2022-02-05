@@ -2,9 +2,11 @@ const express = require("express");
 const res = require("express/lib/response");
 const router = require("express-promise-router")();
 require("dotenv").config();
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const queries = require("./queries.js");
 
@@ -53,7 +55,8 @@ router.post("/api/reg/:page", async function (req, res) {
         reg.membershipId = req.body.membershipId;
 
         // insert query
-        // return res.status(200).json(await queries.createUser(reg));
+        console.log(reg);
+        return res.status(200).json(await queries.createUser(reg));
     }
 
     return res.status(200).json({
