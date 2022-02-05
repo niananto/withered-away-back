@@ -26,6 +26,8 @@ router.get("/api/:tableName", async function (req, res) {
 
 let reg = {};
 router.post("/api/reg/:page", async function (req, res) {
+    console.log("post request received with this body...");
+    console.log(req);
     if (req.params.page == 1) {
         reg.name = req.body.firstName + " " + req.body.lastName; // any string
         reg.gender = req.body.gender; // male, female
@@ -55,8 +57,8 @@ router.post("/api/reg/:page", async function (req, res) {
         reg.membershipId = req.body.membershipId;
 
         // insert query
-        console.log(reg);
-        return res.status(200).json(await queries.createUser(reg));
+        // console.log(reg);
+        // return res.status(200).json(await queries.createUser(reg));
     }
 
     return res.status(200).json({

@@ -41,59 +41,89 @@ async function getAllRow(tableName) {
 }
 
 async function createUser(reg) {
-    await insertPeople(reg.name, reg.gender, reg.birthday);
-    await insertContact(
-        reg.contactName,
-        reg.contactPhoneNo,
-        reg.contactRelationship,
-        reg.contactAddress,
-        reg.peopleName
-    );
+    await insertPeopleInfo(reg);
+    await insertContactInfo(reg);
+    await insertMedicalInfo(reg);
+    await insertFavoriteInfo(reg);
+    await insertMonetoryInfo(reg);
 }
 
-async function insertPeople(peopleName, peopleGender, peopleBirthday) {
+async function insertPeopleInfo(reg) {
     const q = `INSERT INTO PEOPLE 
                 (NAME, GENDER, BIRTHDAY)
                 VALUES
                 (:1, :2, :3)`;
-    const params = [peopleName, peopleGender, peopleBirthday];
+    const params = [reg.peopleName, reg.peopleGender, reg.peopleBirthday];
     return await db_query(q, params);
 }
 
-async function insertContact(
-    contactName,
-    contactPhoneNo,
-    contactRelationship,
-    contactAddress,
-    peopleName
-) {
+async function insertContactInfo(reg) {
     const q1 = `UPDATE PEOPLE
         SET EMERGENCY_CONTACT_NO = :1
         WHERE ID = :1`;
-    const params1 = [contactPhoneNo];
+    const params1 = [reg.contactPhoneNo];
 
     const q2 = `INSERT INTO CONTACT
         (NAME, PHONE_NO, RELATIONSHIP, ADDRESS)
         VALUES
         (:1, :2, :3, :4)`;
     const params2 = [
-        contactName,
-        contactPhoneNo,
-        contactRelationship,
-        contactAddress,
+        reg.contactName,
+        reg.contactPhoneNo,
+        reg.contactRelationship,
+        reg.contactAddress,
     ];
 
     const q3 = `INSERT INTO CONNECTION
         (PEOPLE_ID, CONTACT_ID)
         VALUES
         ((SELECT ID FROM PEOPLE WHERE NAME=:1), (SELECT ID FROM CONTACT WHERE NAME=:2))`;
-    const params3 = [peopleName, contactName];
+    const params3 = [reg.peopleName, reg.contactName];
 
     await db_query(q1, params1);
+    console.log("query 1");
     await db_query(q2, params2);
+    console.log("query 2");
     await db_query(q3, params3);
+    console.log("query 3");
     return;
 }
+
+async function insertMedicalInfo(reg) {
+    const q1 = `UPDATE PEOPLE
+        SET EMERGENCY_CONTACT_NO = :1
+        WHERE ID = :1`;
+    const params1 = [reg.contactPhoneNo];
+
+    const q2 = `INSERT INTO CONTACT
+        (NAME, PHONE_NO, RELATIONSHIP, ADDRESS)
+        VALUES
+        (:1, :2, :3, :4)`;
+    const params2 = [
+        reg.contactName,
+        reg.contactPhoneNo,
+        reg.contactRelationship,
+        reg.contactAddress,
+    ];
+
+    const q3 = `INSERT INTO CONNECTION
+        (PEOPLE_ID, CONTACT_ID)
+        VALUES
+        ((SELECT ID FROM PEOPLE WHERE NAME=:1), (SELECT ID FROM CONTACT WHERE NAME=:2))`;
+    const params3 = [reg.peopleName, reg.contactName];
+
+    await db_query(q1, params1);
+    console.log("query 1");
+    await db_query(q2, params2);
+    console.log("query 2");
+    await db_query(q3, params3);
+    console.log("query 3");
+    return;
+}
+
+async function insertFavoriteInfo(reg) {}
+
+async function insertMonetoryInfo(reg) {}
 
 exports.getSingleRow = getSingleRow;
 exports.getAllRow = getAllRow;
