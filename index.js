@@ -13,7 +13,6 @@ const queries = require("./queries.js");
 /// express ===================================
 
 router.get("/api/:tableName/:id", async function (req, res) {
-    // console.log(req.params);
     const id = req.params.id;
     const tableName = req.params.tableName;
     return res.status(200).json(await queries.getSingleRow(tableName, id));
@@ -26,6 +25,8 @@ router.get("/api/:tableName", async function (req, res) {
 
 let reg = {};
 router.post("/api/reg/:page", async function (req, res) {
+    console.log("post request received with this body...");
+    console.log("req", req.body);
     if (req.params.page == 1) {
         reg.name = req.body.firstName + " " + req.body.lastName; // any string
         reg.gender = req.body.gender; // male, female
@@ -55,14 +56,24 @@ router.post("/api/reg/:page", async function (req, res) {
         reg.membershipId = req.body.membershipId;
 
         // insert query
-        console.log(reg);
-        return res.status(200).json(await queries.createUser(reg));
+        // console.log("reg", reg);
+        await queries.createUser(reg);
     }
 
     return res.status(200).json({
         success: "true",
         registration: reg,
     });
+});
+
+router.post("/api/people/insert", async function (req, res) {
+    var peopleInfo = {};
+    peopleInfo.name = req.body.name;
+    peopleInfo.gender = req.body.gender;
+    peopleInfo.birthday = req.body.gender;
+    peopleInfo.emergencyContactNo = req.body.emergencyContactNo;
+
+    return res.status(200).json(await queries.insertIntoPeople(peopleInfo));
 });
 
 //// server ====================================
