@@ -66,9 +66,28 @@ router.post("/api/reg/:page", async function (req, res) {
     });
 });
 
+router.patch(
+    "/api/:tableName/:attribute/:attrValue",
+    async function (req, res) {
+        const attrValue = req.params.attrValue;
+        const attribute = req.params.attribute;
+        const tableName = req.params.tableName;
+        return res
+            .status(200)
+            .json(
+                await queries.patchTable(
+                    tableName,
+                    attribute,
+                    attrValue,
+                    req.body
+                )
+            );
+    }
+);
+
 router.delete("/api/people/:id", async function (req, res) {
     const id = req.params.id;
-    return res.status(200).json(await queries.deleteUser(id));
+    return res.status(200).json(await queries.deleteUserCascade(id));
 });
 
 //// server ====================================
