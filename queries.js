@@ -76,25 +76,32 @@ async function insertContactInfo(reg, currentPeopleId) {
         WHERE ID = :2`;
     const params1 = [reg.contactPhoneNo, currentPeopleId];
 
+    await db_query(q1, params1);
+
     const q2 = `INSERT INTO CONTACT
-        (NAME, PHONE_NO, RELATIONSHIP, ADDRESS)
+        (NAME, PHONE_NO, ADDRESS)
         VALUES
-        (:1, :2, :3, :4)`;
-    const params2 = [
-        reg.contactName,
-        reg.contactPhoneNo,
-        reg.contactRelationship,
-        reg.contactAddress,
-    ];
+        (:1, :2, :3)`;
+    const params2 = [reg.contactName, reg.contactPhoneNo, reg.contactAddress];
+
+    await db_query(q2, params2);
+
+    const currentContactId = (
+        await db_query(`SELECT ID FROM CONTACT WHERE NAME LIKE :1`, [
+            reg.contactName,
+        ])
+    ).data[0].ID;
 
     const q3 = `INSERT INTO CONNECTION
-        (PEOPLE_ID, CONTACT_ID)
+        (PEOPLE_ID, CONTACT_ID, RELATIONSHIP)
         VALUES
-        (:1, (SELECT ID FROM CONTACT WHERE NAME LIKE :2))`;
-    const params3 = [currentPeopleId, reg.contactName];
+        (:1, :2, :3)`;
+    const params3 = [
+        currentPeopleId,
+        currentContactId,
+        reg.contactRelationship,
+    ];
 
-    await db_query(q1, params1);
-    await db_query(q2, params2);
     await db_query(q3, params3);
     return;
 }
@@ -230,8 +237,17 @@ async function insertMonetoryInfo(reg, currentPeopleId) {
     const params2 = [currentPeopleId, reg.membershipId];
 
     await db_query(q2, params2);
+    return;
+}
+
+async function deleteUser(id) {
+    const q = `DELETE FROM PEOPLE WHERE ID=:1`;
+    const params = [id];
+
+    return await db_query(q, params);
 }
 
 exports.getSingleRow = getSingleRow;
 exports.getAllRow = getAllRow;
 exports.createUser = createUser;
+exports.deleteUser = deleteUser;

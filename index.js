@@ -60,20 +60,15 @@ router.post("/api/reg/:page", async function (req, res) {
         await queries.createUser(reg);
     }
 
-    return res.status(200).json({
+    return res.status(201).json({
         success: "true",
         registration: reg,
     });
 });
 
-router.post("/api/people/insert", async function (req, res) {
-    var peopleInfo = {};
-    peopleInfo.name = req.body.name;
-    peopleInfo.gender = req.body.gender;
-    peopleInfo.birthday = req.body.gender;
-    peopleInfo.emergencyContactNo = req.body.emergencyContactNo;
-
-    return res.status(200).json(await queries.insertIntoPeople(peopleInfo));
+router.delete("/api/people/:id", async function (req, res) {
+    const id = req.params.id;
+    return res.status(200).json(await queries.deleteUser(id));
 });
 
 //// server ====================================
