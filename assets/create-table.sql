@@ -177,14 +177,14 @@ CREATE TABLE health_record(
 	CONSTRAINT HEALTH_RECORD_PEOPLE_FK foreign key (people_id) references PEOPLE(ID) ON DELETE CASCADE
 );
 
-CREATE TABLE health_log(
-	health_record_id NUMBER NOT NULL,
-	doctor_id NUMBER NOT NULL,
+-- CREATE TABLE health_log(
+-- 	health_record_id NUMBER NOT NULL,
+-- 	doctor_id NUMBER NOT NULL,
     
-	CONSTRAINT HEALTH_LOG_PK primary key(health_record_id,doctor_id),
-	CONSTRAINT HEALTH_LOG_HEALTH_RECORD_FK foreign key (health_record_id) references HEALTH_RECORD(ID),
-	CONSTRAINT HEALTH_LOG_DOCTOR_FK foreign key (doctor_id) references DOCTOR(ID)
-);
+-- 	CONSTRAINT HEALTH_LOG_PK primary key(health_record_id,doctor_id),
+-- 	CONSTRAINT HEALTH_LOG_HEALTH_RECORD_FK foreign key (health_record_id) references HEALTH_RECORD(ID),
+-- 	CONSTRAINT HEALTH_LOG_DOCTOR_FK foreign key (doctor_id) references DOCTOR(ID)
+-- );
 
 CREATE TABLE book_issue(
 	book_id NUMBER NOT NULL,
@@ -226,28 +226,28 @@ CREATE TABLE account(
 	CONSTRAINT ACCOUNT_PEOPLE_FK foreign key (people_id ) references PEOPLE(ID) ON DELETE CASCADE
 );
 
-CREATE TABLE consumes_food (
-	people_id NUMBER NOT NULL,
-	food_id NUMBER NOT NULL,
+-- CREATE TABLE consumes_food (
+-- 	people_id NUMBER NOT NULL,
+-- 	food_id NUMBER NOT NULL,
 
-	CONSTRAINT CONSUMES_FOOD_PK primary key(people_id,food_id),
-	CONSTRAINT CONSUMES_FOOD_PEOPLE_FK foreign key (people_id) references PEOPLE(ID) ON DELETE CASCADE,
-	CONSTRAINT CONSUMES_FOOD_FOOD_FK foreign key (food_id) references FOOD(ID)
-);
+-- 	CONSTRAINT CONSUMES_FOOD_PK primary key(people_id,food_id),
+-- 	CONSTRAINT CONSUMES_FOOD_PEOPLE_FK foreign key (people_id) references PEOPLE(ID) ON DELETE CASCADE,
+-- 	CONSTRAINT CONSUMES_FOOD_FOOD_FK foreign key (food_id) references FOOD(ID)
+-- );
 
 
-CREATE TABLE people_schedule(
-	day VARCHAR2(20),
-	people_id NUMBER NOT NULL,
-	bed_time VARCHAR2(20),
-	leisure_time VARCHAR2(20),
-	breakfast_time VARCHAR2(20),
-	lunch_time VARCHAR2(20),
-	dinner_time VARCHAR2(20),
+-- CREATE TABLE people_schedule(
+-- 	day VARCHAR2(20),
+-- 	people_id NUMBER NOT NULL,
+-- 	bed_time VARCHAR2(20),
+-- 	leisure_time VARCHAR2(20),
+-- 	breakfast_time VARCHAR2(20),
+-- 	lunch_time VARCHAR2(20),
+-- 	dinner_time VARCHAR2(20),
 
-	CONSTRAINT PEOPLE_SCHEDULE_PK primary key(day,people_id),
-	CONSTRAINT PEOPLE_SCHEDULE_PEOPLE_FK foreign key (people_id) references PEOPLE(ID) ON DELETE CASCADE
-);
+-- 	CONSTRAINT PEOPLE_SCHEDULE_PK primary key(day,people_id),
+-- 	CONSTRAINT PEOPLE_SCHEDULE_PEOPLE_FK foreign key (people_id) references PEOPLE(ID) ON DELETE CASCADE
+-- );
 	 
 
 
@@ -259,7 +259,7 @@ CREATE TABLE staff_schedule(
 	room_id NUMBER NOT NULL,
 
 	CONSTRAINT STAFF_SCHEDULE_PK primary key(day,staff_id,room_id),
-	CONSTRAINT STAFF_SCHEDULE_STAFF_FK foreign key (staff_id) references STAFF(ID),
+	CONSTRAINT STAFF_SCHEDULE_STAFF_FK foreign key (staff_id) references STAFF(ID) ON DELETE CASCADE,
 	CONSTRAINT STAFF_SCHEDULE_ROOM_FK foreign key (room_id) references ROOM(ID)
 );
 	 

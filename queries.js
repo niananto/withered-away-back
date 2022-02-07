@@ -248,9 +248,9 @@ async function deleteUserCascade(id) {
 }
 
 async function patchTable(tableName, attribute, attrValue, body) {
-    for (let [key, value] of Object.entries(body)) {
-        const q = `UPDATE ${tableName} SET ${key}=:1 WHERE ${attribute}=:2`;
-        const params = [value, attrValue];
+    for (let [k, v] of Object.entries(body)) {
+        const q = `UPDATE ${tableName} SET ${k}=:1 WHERE ${attribute}=:2`;
+        const params = [v, attrValue];
 
         await db_query(q, params);
     }
@@ -258,8 +258,35 @@ async function patchTable(tableName, attribute, attrValue, body) {
     return;
 }
 
+async function insertIntoTable(tableName, body) {
+    let keys = [];
+    let params = [];
+    let placeholders = [];
+
+    let i = 1;
+    for (let [k, v] of Object.entries(body)) {
+        keys.push(k);
+        params.push(v);
+
+        placeholders.push(":" + i);
+        i++;
+    }
+
+    const attributes = keys.join(",");
+    const attrValues = placeholders.join(",");
+    const q =
+        `INSERT INTO ${tableName} (` +
+        attributes +
+        `) VALUES (` +
+        attrValues +
+        `)`;
+
+    return await db_query(q, params);
+}
+
 exports.getSingleRow = getSingleRow;
 exports.getAllRow = getAllRow;
 exports.createUser = createUser;
 exports.deleteUserCascade = deleteUserCascade;
 exports.patchTable = patchTable;
+exports.insertIntoTable = insertIntoTable;

@@ -90,6 +90,13 @@ router.delete("/api/people/:id", async function (req, res) {
     return res.status(200).json(await queries.deleteUserCascade(id));
 });
 
+router.post("/api/:tableName", async function (req, res) {
+    const tableName = req.params.tableName;
+    return res
+        .status(200)
+        .json(await queries.insertIntoTable(tableName, req.body));
+});
+
 //// server ====================================
 
 app.use(router);
