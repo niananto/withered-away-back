@@ -97,6 +97,27 @@ router.post("/api/:tableName", async function (req, res) {
         .json(await queries.insertIntoTable(tableName, req.body));
 });
 
+router.get(
+    "/api/:tableName1/:attribute1/:tableName2/:attribute2",
+    async function (req, res) {
+        const tableName1 = req.params.tableName1;
+        const attribute1 = req.params.attribute1;
+        const tableName2 = req.params.tableName2;
+        const attribute2 = req.params.attribute2;
+
+        return res
+            .status(200)
+            .json(
+                await queries.joinTables(
+                    tableName1,
+                    attribute1,
+                    tableName2,
+                    attribute2
+                )
+            );
+    }
+);
+
 //// server ====================================
 
 app.use(router);

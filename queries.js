@@ -272,8 +272,8 @@ async function insertIntoTable(tableName, body) {
         i++;
     }
 
-    const attributes = keys.join(",");
-    const attrValues = placeholders.join(",");
+    const attributes = keys.join(", ");
+    const attrValues = placeholders.join(", ");
     const q =
         `INSERT INTO ${tableName} (` +
         attributes +
@@ -281,6 +281,23 @@ async function insertIntoTable(tableName, body) {
         attrValues +
         `)`;
 
+    await db_query(q, params);
+
+    let searchList = [];
+    for (let i = 0; i < keys.length; i++) {
+        searchList.push(keys[i] + "=" + placeholders[i]);
+    }
+    const searchString = searchList.join(" AND ");
+
+    const q1 = `SELECT * FROM ${tableName} WHERE ` + searchString;
+    const params1 = params;
+    return await db_query(q1, params1);
+}
+
+async function joinTables(tableName1, attribute1, tableName2, attribute2) {
+    const q = `SELECT * FROM ${tableName1} FULL JOIN ${tableName2} 
+                ON ${tableName1}.${attribute1}=${tableName2}.${attribute2}`;
+    const params = [];
     return await db_query(q, params);
 }
 
@@ -290,3 +307,4 @@ exports.createUser = createUser;
 exports.deleteUserCascade = deleteUserCascade;
 exports.patchTable = patchTable;
 exports.insertIntoTable = insertIntoTable;
+exports.joinTables = joinTables;
