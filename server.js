@@ -15,6 +15,7 @@ const getQueries = require("./queries/getQueries.js");
 const postQueries = require("./queries/postQueries.js");
 const patchQueries = require("./queries/patchQueries.js");
 const deleteQueries = require("./queries/deleteQueries.js");
+const authQueries = require("./queries/authQueries.js");
 
 /// express ===================================
 
@@ -29,47 +30,57 @@ router.get("/api/:tableName", async function (req, res) {
     return res.status(200).json(await getQueries.getAllRow(tableName));
 });
 
-let reg = {};
-router.post("/api/reg/:page", async function (req, res) {
-    console.log("post request received with this body...");
+// let reg = {};
+// router.post("/api/reg/:page", async function (req, res) {
+//     console.log("post request received with this body...");
+//     console.log("req", req.body);
+//     if (req.params.page == 1) {
+//         reg.name = req.body.firstName + " " + req.body.lastName; // any string
+//         reg.gender = req.body.gender; // male, female
+//         reg.birthday = req.body.birthday; // DD-MON-YYYY
+//     } else if (req.params.page == 2) {
+//         reg.contactName = req.body.contactName;
+//         reg.contactPhoneNo = req.body.contactPhoneNo;
+//         reg.contactRelationship = req.body.contactRelationship;
+//         reg.contactAddress = req.body.contactAddress;
+//     } else if (req.params.page == 3) {
+//         reg.diseases = req.body.diseases; // list of diseases
+//         reg.medicines = req.body.medicines; // list of medicines
+//         reg.height = req.body.height;
+//         reg.weight = req.body.weight;
+//         reg.bloodGroup = req.body.bloodGroup;
+//         reg.vaccines = req.body.vaccines; // list of vaccines
+//         reg.dissabilities = req.body.dissabilities; // list
+//         reg.allergies = req.body.allergies;
+//         reg.healthCondition = req.body.healthCondition;
+//     } else if (req.params.page == 4) {
+//         reg.songs = req.body.songs; // list
+//         reg.movies = req.body.movies; // list
+//         reg.games = req.body.games; // list
+//     } else if (req.params.page == 5) {
+//         reg.bankAccountNo = req.body.bankAccountNo;
+//         reg.balance = req.body.balance;
+//         reg.membershipId = req.body.membershipId;
+
+//         // insert query
+//         // console.log("reg", reg);
+//         await postQueries.createUser(reg);
+//     }
+
+//     return res.status(201).json({
+//         success: "true",
+//         registration: reg,
+//     });
+// });
+
+router.post("/api/reg", async function (req, res) {
     console.log("req", req.body);
-    if (req.params.page == 1) {
-        reg.name = req.body.firstName + " " + req.body.lastName; // any string
-        reg.gender = req.body.gender; // male, female
-        reg.birthday = req.body.birthday; // DD-MON-YYYY
-    } else if (req.params.page == 2) {
-        reg.contactName = req.body.contactName;
-        reg.contactPhoneNo = req.body.contactPhoneNo;
-        reg.contactRelationship = req.body.contactRelationship;
-        reg.contactAddress = req.body.contactAddress;
-    } else if (req.params.page == 3) {
-        reg.diseases = req.body.diseases; // list of diseases
-        reg.medicines = req.body.medicines; // list of medicines
-        reg.height = req.body.height;
-        reg.weight = req.body.weight;
-        reg.bloodGroup = req.body.bloodGroup;
-        reg.vaccines = req.body.vaccines; // list of vaccines
-        reg.dissabilities = req.body.dissabilities; // list
-        reg.allergies = req.body.allergies;
-        reg.healthCondition = req.body.healthCondition;
-    } else if (req.params.page == 4) {
-        reg.songs = req.body.songs; // list
-        reg.movies = req.body.movies; // list
-        reg.games = req.body.games; // list
-    } else if (req.params.page == 5) {
-        reg.bankAccountNo = req.body.bankAccountNo;
-        reg.balance = req.body.balance;
-        reg.membershipId = req.body.membershipId;
-
-        // insert query
-        // console.log("reg", reg);
-        await postQueries.createUser(reg);
+    try {
+        return res.status(201).json(await postQueries.createUser(req.body));
+    } catch(e) {
+        console.log(e);
+        return res.status(500).send('Could Not Create User');
     }
-
-    return res.status(201).json({
-        success: "true",
-        registration: reg,
-    });
 });
 
 router.patch(
@@ -148,6 +159,99 @@ router.get(
 );
 
 //// auth ==================================
+
+router.get("/auth/users/all", async function (req, res) {
+    return res.status(200).json(await authQueries.getUsers());
+});
+
+router.post("/auth/users/reg", async (req, res) => {
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const user = {
+            role: req.body.role,
+            username: req.body.username,
+            password: hashedPassword,
+        };
+        // users.push(user);
+        return res.status(201).json(await authQueries.insertUser(user));
+    } catch {
+        res.status(500).send();
+    }
+});
+
+router.post("/auth/users/login", async (req, res) => {
+    const users = (await authQueries.getUsers()).data;
+    const user = users.find(
+        (user) =>
+            user.ROLE == req.body.role && // I can make this where the req does not have to have a role
+            user.USERNAME == req.body.username
+    );
+    if (user == null) {
+        return res.status(400).send("Cannot find user");
+    }
+    try {
+        if (await bcrypt.compare(req.body.password, user.HASHED_PASSWORD)) {
+            const payload = {
+                role: user.ROLE,
+                username: user.USERNAME,
+                password: user.HASHED_PASSWORD,
+            };
+            const accessToken = jwt.sign(
+                payload,
+                process.env.ACCESS_TOKEN_SECRET
+            );
+            res.json({ msg: "Success", auth: accessToken });
+        } else {
+            res.json({ msg: "Not allowed" });
+        }
+    } catch (e) {
+        console.log(e);
+        res.status(500).send();
+    }
+});
+
+router.get("/auth/check-admin", authenticateToken(["admin"]), (req, res) => {
+    return res.status(200).json(req.msg);
+});
+
+router.get("/auth/check-people", authenticateToken(["people"]), (req, res) => {
+    return res.status(200).json(req.msg);
+});
+
+router.get("/auth/check-doctor", authenticateToken(["doctor"]), (req, res) => {
+    return res.status(200).json(req.msg);
+});
+
+router.get("/auth/check-staff", authenticateToken(["staff"]), (req, res) => {
+    return res.status(200).json(req.msg);
+});
+
+function authenticateToken(roles) {
+    return (req, res, next) => {
+        try {
+            const authHeader = req.headers["authorization"];
+            const token = authHeader && authHeader.split(" ")[1];
+            if (token == null) return res.sendStatus(401);
+
+            jwt.verify(
+                token,
+                process.env.ACCESS_TOKEN_SECRET,
+                (err, payload) => {
+                    if (err) return res.sendStatus(403);
+                    const roleMatch = roles.find(
+                        (role) => role == payload.role
+                    );
+                    if (roleMatch == null) return res.sendStatus(403);
+                    req.msg = "welcome " + payload.role;
+                    next();
+                }
+            );
+        } catch (e) {
+            console.log(e);
+            res.status(500).send();
+        }
+    };
+}
 
 //// server ====================================
 

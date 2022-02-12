@@ -2,21 +2,19 @@ const query = require("./queries.js");
 
 async function insertPeopleInfo(reg) {
     const q = `INSERT INTO PEOPLE 
-                (NAME, GENDER, BIRTHDAY)
+                (NAME, GENDER, BIRTHDAY, PHONE_NO)
                 VALUES
-                (:1, :2, :3)`;
-    const params = [reg.name, reg.gender, reg.birthday];
+                (:1, :2, :3, :4)`;
+    const params = [
+        reg.firstName + " " + reg.lastName,
+        reg.gender,
+        reg.birthday,
+        reg.phoneNo,
+    ];
     return await query.db_query(q, params);
 }
 
 async function insertContactInfo(reg, currentPeopleId) {
-    const q1 = `UPDATE PEOPLE
-        SET EMERGENCY_CONTACT_NO = :1
-        WHERE ID = :2`;
-    const params1 = [reg.contactPhoneNo, currentPeopleId];
-
-    await query.db_query(q1, params1);
-
     const q2 = `INSERT INTO CONTACT
         (NAME, PHONE_NO, ADDRESS)
         VALUES
@@ -46,22 +44,22 @@ async function insertContactInfo(reg, currentPeopleId) {
 }
 
 async function insertMedicalInfo(reg, currentPeopleId) {
-    for (let diseaseName of reg.diseases) {
+    for (let disease of Object.values(reg.diseases)) {
         let q1 = `BEGIN
                     INSERT_INTO_DISEASE(:1);
                 END;`;
-        let params1 = [diseaseName];
+        let params1 = [disease.name];
 
         let q2 = `INSERT INTO SUFFER_FROM
             (PEOPLE_ID, DISEASE_ID) VALUES
             (:1, (SELECT ID FROM DISEASE WHERE NAME LIKE :2))`;
-        let params2 = [currentPeopleId, diseaseName];
+        let params2 = [currentPeopleId, disease.name];
 
         await query.db_query(q1, params1);
         await query.db_query(q2, params2);
     }
 
-    for (let medicine of reg.medicines) {
+    for (let medicine of Object.values(reg.medicines)) {
         let q3 = `BEGIN
                     INSERT_INTO_MEDICINE(:1, :2);   
                 END;`;
@@ -89,23 +87,23 @@ async function insertMedicalInfo(reg, currentPeopleId) {
 
     await query.db_query(q5, params5);
 
-    for (let vaccineName of reg.vaccines) {
+    for (let vaccine of Object.values(reg.vaccines)) {
         let q6 = `UPDATE HEALTH_RECORD SET VACCINE=(VACCINE || ' , ' || :1) WHERE PEOPLE_ID=:2`;
-        let params6 = [vaccineName, currentPeopleId];
+        let params6 = [vaccine.name, currentPeopleId];
 
         await query.db_query(q6, params6);
     }
 
-    for (let dissabilityName of reg.dissabilities) {
+    for (let dissability of Object.values(reg.dissabilities)) {
         let q7 = `UPDATE HEALTH_RECORD SET DISABILITY=(DISABILITY || ' , ' || :1) WHERE PEOPLE_ID=:2`;
-        let params7 = [dissabilityName, currentPeopleId];
+        let params7 = [dissability.name, currentPeopleId];
 
         await query.db_query(q7, params7);
     }
 
-    for (let allergyName of reg.allergies) {
+    for (let allergy of Object.values(reg.allergies)) {
         let q8 = `UPDATE HEALTH_RECORD SET ALLERGY=(ALLERGY || ' , ' || :1) WHERE PEOPLE_ID=:2`;
-        let params8 = [allergyName, currentPeopleId];
+        let params8 = [allergy.name, currentPeopleId];
 
         await query.db_query(q8, params8);
     }
@@ -114,46 +112,46 @@ async function insertMedicalInfo(reg, currentPeopleId) {
 }
 
 async function insertFavoriteInfo(reg, currentPeopleId) {
-    for (let gameName of reg.games) {
+    for (let game of Object.values(reg.games)) {
         let q1 = `BEGIN
                     INSERT_INTO_GAME(:1);
                 END;`;
-        let params1 = [gameName];
+        let params1 = [game.name];
 
         let q2 = `INSERT INTO GAME_FAVORITES
             (PEOPLE_ID, GAME_ID) VALUES
             (:1, (SELECT ID FROM GAME WHERE TITLE LIKE :2))`;
-        let params2 = [currentPeopleId, gameName];
+        let params2 = [currentPeopleId, game.name];
 
         await query.db_query(q1, params1);
         await query.db_query(q2, params2);
     }
 
-    for (let songName of reg.songs) {
+    for (let song of Object.values(reg.songs)) {
         let q1 = `BEGIN
                     INSERT_INTO_SONG(:1);
                 END;`;
-        let params1 = [songName];
+        let params1 = [song.name];
 
         let q2 = `INSERT INTO SONG_FAVORITES
             (PEOPLE_ID, SONG_ID) VALUES
             (:1, (SELECT ID FROM SONG WHERE TITLE LIKE :2))`;
-        let params2 = [currentPeopleId, songName];
+        let params2 = [currentPeopleId, song.name];
 
         await query.db_query(q1, params1);
         await query.db_query(q2, params2);
     }
 
-    for (let movieName of reg.movies) {
+    for (let movie of Object.values(reg.movies)) {
         let q1 = `BEGIN
                     INSERT_INTO_MOVIE(:1);
                 END;`;
-        let params1 = [movieName];
+        let params1 = [movie.name];
 
         let q2 = `INSERT INTO MOVIE_FAVORITES
             (PEOPLE_ID, MOVIE_ID) VALUES
             (:1, (SELECT ID FROM MOVIE WHERE TITLE LIKE :2))`;
-        let params2 = [currentPeopleId, movieName];
+        let params2 = [currentPeopleId, movie.name];
 
         await query.db_query(q1, params1);
         await query.db_query(q2, params2);
@@ -164,9 +162,14 @@ async function insertFavoriteInfo(reg, currentPeopleId) {
 
 async function insertMonetoryInfo(reg, currentPeopleId) {
     const q1 = `INSERT INTO ACCOUNT
-        (BANK_ACCOUNT_NO, PEOPLE_ID, BALANCE) VALUES
-        (:1, :2, :3)`;
-    const params1 = [reg.bankAccountNo, currentPeopleId, reg.balance];
+        (BANK_ACCOUNT_NO, BANK_NAME, PEOPLE_ID, BALANCE) VALUES
+        (:1, :2, :3, :4)`;
+    const params1 = [
+        reg.bankAccountNo,
+        reg.bankName,
+        currentPeopleId,
+        reg.balance,
+    ];
 
     await query.db_query(q1, params1);
 
