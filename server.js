@@ -17,6 +17,8 @@ const patchQueries = require("./queries/patchQueries.js");
 const deleteQueries = require("./queries/deleteQueries.js");
 const authQueries = require("./queries/authQueries.js");
 
+const formateDate = require("./formateDate.js");
+
 /// express ===================================
 
 router.get("/api/:tableName/:id", async function (req, res) {
@@ -77,9 +79,9 @@ router.post("/api/reg", async function (req, res) {
     console.log("req", req.body);
     try {
         return res.status(201).json(await postQueries.createUser(req.body));
-    } catch(e) {
+    } catch (e) {
         console.log(e);
-        return res.status(500).send('Could Not Create User');
+        return res.status(500).send("Could Not Create User");
     }
 });
 
@@ -112,6 +114,11 @@ router.delete("/api/:tableName/:id", async function (req, res) {
 
 router.post("/api/:tableName", async function (req, res) {
     const tableName = req.params.tableName;
+    if (req.body.birthday) {
+        req.body.birthday = formateDate.formateDate(req.body.birthday);
+    } else if (req.body.birthdate) {
+        req.body.birthdate = formateDate.formateDate(req.body.birthdate);
+    }
     return res
         .status(200)
         .json(await postQueries.insertIntoTable(tableName, req.body));
