@@ -102,9 +102,12 @@ router.patch(
     }
 );
 
-router.delete("/api/people/:id", async function (req, res) {
+router.delete("/api/:tableName/:id", async function (req, res) {
+    const tableName = req.params.tableName;
     const id = req.params.id;
-    return res.status(200).json(await deleteQueries.deleteUserCascade(id));
+    return res
+        .status(200)
+        .json(await deleteQueries.deleteUserCascade(tableName, id));
 });
 
 router.post("/api/:tableName", async function (req, res) {
@@ -200,7 +203,7 @@ router.post("/auth/users/login", async (req, res) => {
                 payload,
                 process.env.ACCESS_TOKEN_SECRET
             );
-            res.json({ msg: "Success", auth: accessToken });
+            res.json({ msg: "Success", accessToken: accessToken });
         } else {
             res.json({ msg: "Not allowed" });
         }
