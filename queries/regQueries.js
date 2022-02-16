@@ -44,120 +44,134 @@ async function insertContactInfo(reg, currentPeopleId) {
 }
 
 async function insertMedicalInfo(reg, currentPeopleId) {
-    for (let disease of Object.values(reg.diseases)) {
-        let q1 = `BEGIN
+	for (let disease of Object.values(reg.diseases)) {
+		if (disease.name.trim() === "") continue;
+		let q1 = `BEGIN
                     INSERT_INTO_DISEASE(:1);
                 END;`;
-        let params1 = [disease.name];
+		let params1 = [disease.name];
 
-        let q2 = `INSERT INTO SUFFER_FROM
+		let q2 = `INSERT INTO SUFFER_FROM
             (PEOPLE_ID, DISEASE_ID) VALUES
             (:1, (SELECT ID FROM DISEASE WHERE NAME LIKE :2))`;
-        let params2 = [currentPeopleId, disease.name];
+		let params2 = [currentPeopleId, disease.name];
 
-        await query.db_query(q1, params1);
-        await query.db_query(q2, params2);
-    }
+		await query.db_query(q1, params1);
+		await query.db_query(q2, params2);
+	}
 
-    for (let medicine of Object.values(reg.medicines)) {
-        let q3 = `BEGIN
+	for (let medicine of Object.values(reg.medicines)) {
+		if (medicine.name.trim() === "") continue;
+		let q3 = `BEGIN
                     INSERT_INTO_MEDICINE(:1, :2);   
                 END;`;
-        let params3 = [medicine.name, medicine.time];
+		let params3 = [medicine.name, medicine.time];
 
-        let q4 = `INSERT INTO TAKES_MEDICINE
+		let q4 = `INSERT INTO TAKES_MEDICINE
             (PEOPLE_ID, MEDICINE_ID) VALUES
             (:1, (SELECT ID FROM MEDICINE WHERE NAME LIKE :2))`;
-        let params4 = [currentPeopleId, medicine.name];
+		let params4 = [currentPeopleId, medicine.name];
 
-        await query.db_query(q3, params3);
-        await query.db_query(q4, params4);
-    }
+		await query.db_query(q3, params3);
+		await query.db_query(q4, params4);
+	}
 
-    const q5 = `INSERT INTO HEALTH_RECORD
+	const q5 = `INSERT INTO HEALTH_RECORD
         (PEOPLE_ID, HEIGHT, WEIGHT, BLOOD_GROUP, HEALTH_CONDITION) VALUES
         (:1, :2, :3, :4, :5)`;
-    const params5 = [
-        currentPeopleId,
-        reg.height,
-        reg.weight,
-        reg.bloodGroup,
-        reg.healthCondition,
-    ];
+	const params5 = [
+		currentPeopleId,
+		reg.height,
+		reg.weight,
+		reg.bloodGroup,
+		reg.healthCondition,
+	];
 
-    await query.db_query(q5, params5);
+	await query.db_query(q5, params5);
 
-    for (let vaccine of Object.values(reg.vaccines)) {
-        let q6 = `UPDATE HEALTH_RECORD SET VACCINE=(VACCINE || ' , ' || :1) WHERE PEOPLE_ID=:2`;
-        let params6 = [vaccine.name, currentPeopleId];
+	for (let vaccine of Object.values(reg.vaccines)) {
+		if (vaccine.name.trim() === "") continue;
 
-        await query.db_query(q6, params6);
-    }
+		let q6 = `UPDATE HEALTH_RECORD SET VACCINE=(VACCINE || ' , ' || :1) WHERE PEOPLE_ID=:2`;
+		let params6 = [vaccine.name, currentPeopleId];
 
-    for (let dissability of Object.values(reg.dissabilities)) {
-        let q7 = `UPDATE HEALTH_RECORD SET DISABILITY=(DISABILITY || ' , ' || :1) WHERE PEOPLE_ID=:2`;
-        let params7 = [dissability.name, currentPeopleId];
+		await query.db_query(q6, params6);
+	}
 
-        await query.db_query(q7, params7);
-    }
+	for (let dissability of Object.values(reg.dissabilities)) {
+		if (dissability.name.trim() === "") continue;
 
-    for (let allergy of Object.values(reg.allergies)) {
-        let q8 = `UPDATE HEALTH_RECORD SET ALLERGY=(ALLERGY || ' , ' || :1) WHERE PEOPLE_ID=:2`;
-        let params8 = [allergy.name, currentPeopleId];
+		let q7 = `UPDATE HEALTH_RECORD SET DISABILITY=(DISABILITY || ' , ' || :1) WHERE PEOPLE_ID=:2`;
+		let params7 = [dissability.name, currentPeopleId];
 
-        await query.db_query(q8, params8);
-    }
+		await query.db_query(q7, params7);
+	}
 
-    return;
+	for (let allergy of Object.values(reg.allergies)) {
+		if (allergy.name.trim() === "") continue;
+
+		let q8 = `UPDATE HEALTH_RECORD SET ALLERGY=(ALLERGY || ' , ' || :1) WHERE PEOPLE_ID=:2`;
+		let params8 = [allergy.name, currentPeopleId];
+
+		await query.db_query(q8, params8);
+	}
+
+	return;
 }
 
 async function insertFavoriteInfo(reg, currentPeopleId) {
-    for (let game of Object.values(reg.games)) {
-        let q1 = `BEGIN
+	for (let game of Object.values(reg.games)) {
+		if (game.name.trim() === "") continue;
+
+		let q1 = `BEGIN
                     INSERT_INTO_GAME(:1);
                 END;`;
-        let params1 = [game.name];
+		let params1 = [game.name];
 
-        let q2 = `INSERT INTO GAME_FAVORITES
+		let q2 = `INSERT INTO GAME_FAVORITES
             (PEOPLE_ID, GAME_ID) VALUES
             (:1, (SELECT ID FROM GAME WHERE TITLE LIKE :2))`;
-        let params2 = [currentPeopleId, game.name];
+		let params2 = [currentPeopleId, game.name];
 
-        await query.db_query(q1, params1);
-        await query.db_query(q2, params2);
-    }
+		await query.db_query(q1, params1);
+		await query.db_query(q2, params2);
+	}
 
-    for (let song of Object.values(reg.songs)) {
-        let q1 = `BEGIN
+	for (let song of Object.values(reg.songs)) {
+		if (song.name.trim() === "") continue;
+
+		let q1 = `BEGIN
                     INSERT_INTO_SONG(:1);
                 END;`;
-        let params1 = [song.name];
+		let params1 = [song.name];
 
-        let q2 = `INSERT INTO SONG_FAVORITES
+		let q2 = `INSERT INTO SONG_FAVORITES
             (PEOPLE_ID, SONG_ID) VALUES
             (:1, (SELECT ID FROM SONG WHERE TITLE LIKE :2))`;
-        let params2 = [currentPeopleId, song.name];
+		let params2 = [currentPeopleId, song.name];
 
-        await query.db_query(q1, params1);
-        await query.db_query(q2, params2);
-    }
+		await query.db_query(q1, params1);
+		await query.db_query(q2, params2);
+	}
 
-    for (let movie of Object.values(reg.movies)) {
-        let q1 = `BEGIN
+	for (let movie of Object.values(reg.movies)) {
+		if (movie.name.trim() === "") continue;
+
+		let q1 = `BEGIN
                     INSERT_INTO_MOVIE(:1);
                 END;`;
-        let params1 = [movie.name];
+		let params1 = [movie.name];
 
-        let q2 = `INSERT INTO MOVIE_FAVORITES
+		let q2 = `INSERT INTO MOVIE_FAVORITES
             (PEOPLE_ID, MOVIE_ID) VALUES
             (:1, (SELECT ID FROM MOVIE WHERE TITLE LIKE :2))`;
-        let params2 = [currentPeopleId, movie.name];
+		let params2 = [currentPeopleId, movie.name];
 
-        await query.db_query(q1, params1);
-        await query.db_query(q2, params2);
-    }
+		await query.db_query(q1, params1);
+		await query.db_query(q2, params2);
+	}
 
-    return;
+	return;
 }
 
 async function insertMonetoryInfo(reg, currentPeopleId) {

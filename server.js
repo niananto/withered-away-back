@@ -77,6 +77,11 @@ router.get("/api/:tableName", async function (req, res) {
 
 router.post("/api/reg", async function (req, res) {
     console.log("req", req.body);
+    if (req.body.birthday) {
+		req.body.birthday = formateDate.formateDate(
+			req.body.birthday.toString()
+		);
+	}
     try {
         return res.status(201).json(await postQueries.createUser(req.body));
     } catch (e) {
