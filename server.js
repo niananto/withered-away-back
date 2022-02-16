@@ -113,111 +113,121 @@ router.delete("/api/:tableName/:id", async function (req, res) {
 });
 
 router.post("/api/:tableName", async function (req, res) {
-    const tableName = req.params.tableName;
-    if (req.body.birthday) {
-        req.body.birthday = formateDate.formateDate(req.body.birthday);
-    } else if (req.body.birthdate) {
-        req.body.birthdate = formateDate.formateDate(req.body.birthdate);
-    }
-    return res
-        .status(200)
-        .json(await postQueries.insertIntoTable(tableName, req.body));
+	const tableName = req.params.tableName;
+	if (req.body.BIRTHDAY) {
+		req.body.BIRTHDAY = formateDate.formateDate(
+			req.body.BIRTHDAY.toString()
+		);
+	} else if (req.body.BIRTHDATE) {
+		req.body.BIRTHDATE = formateDate.formateDate(
+			req.body.BIRTHDATE.toString()
+		);
+	}
+	return res
+		.status(200)
+		.json(await postQueries.insertIntoTable(tableName, req.body));
 });
 
 router.get(
-    "/api/:tableName1/:attribute1/:tableName2/:attribute2",
-    async function (req, res) {
-        const tableName1 = req.params.tableName1;
-        const attribute1 = req.params.attribute1;
-        const tableName2 = req.params.tableName2;
-        const attribute2 = req.params.attribute2;
+	"/api/:tableName1/:attribute1/:tableName2/:attribute2",
+	async function (req, res) {
+		const tableName1 = req.params.tableName1;
+		const attribute1 = req.params.attribute1;
+		const tableName2 = req.params.tableName2;
+		const attribute2 = req.params.attribute2;
 
-        return res
-            .status(200)
-            .json(
-                await getQueries.joinTables(
-                    tableName1,
-                    attribute1,
-                    tableName2,
-                    attribute2
-                )
-            );
-    }
+		return res
+			.status(200)
+			.json(
+				await getQueries.joinTables(
+					tableName1,
+					attribute1,
+					tableName2,
+					attribute2
+				)
+			);
+	}
 );
 
 router.get(
-    "/api/:tableName1/:attribute1/:tableName2/:attribute2/:attrValue",
-    async function (req, res) {
-        const tableName1 = req.params.tableName1;
-        const attribute1 = req.params.attribute1;
-        const tableName2 = req.params.tableName2;
-        const attribute2 = req.params.attribute2;
-        const attrValue = req.params.attrValue;
+	"/api/:tableName1/:attribute1/:tableName2/:attribute2/:attrValue",
+	async function (req, res) {
+		const tableName1 = req.params.tableName1;
+		const attribute1 = req.params.attribute1;
+		const tableName2 = req.params.tableName2;
+		const attribute2 = req.params.attribute2;
+		const attrValue = req.params.attrValue;
 
-        return res
-            .status(200)
-            .json(
-                await getQueries.joinTablesReturnSingle(
-                    tableName1,
-                    attribute1,
-                    tableName2,
-                    attribute2,
-                    attrValue
-                )
-            );
-    }
+		return res
+			.status(200)
+			.json(
+				await getQueries.joinTablesReturnSingle(
+					tableName1,
+					attribute1,
+					tableName2,
+					attribute2,
+					attrValue
+				)
+			);
+	}
 );
 
 //// auth ==================================
 
 router.get("/auth/users/all", async function (req, res) {
-    return res.status(200).json(await authQueries.getUsers());
+	return res.status(200).json(await authQueries.getUsers());
 });
 
 router.post("/auth/users/reg", async (req, res) => {
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const user = {
-            role: req.body.role,
-            username: req.body.username,
-            password: hashedPassword,
-        };
-        // users.push(user);
-        return res.status(201).json(await authQueries.insertUser(user));
-    } catch {
-        res.status(500).send();
-    }
+	try {
+		const hashedPassword = await bcrypt.hash(req.body.password, 10);
+		const user = {
+			role: req.body.role,
+			username: req.body.username,
+			password: hashedPassword,
+		};
+		// users.push(user);
+		return res.status(201).json(await authQueries.insertUser(user));
+	} catch {
+		res.status(500).send();
+	}
 });
 
 router.post("/auth/users/login", async (req, res) => {
-    const users = (await authQueries.getUsers()).data;
-    const user = users.find(
-        (user) =>
-            user.ROLE == req.body.role && // I can make this where the req does not have to have a role
-            user.USERNAME == req.body.username
-    );
-    if (user == null) {
-        return res.status(400).send("Cannot find user");
-    }
-    try {
-        if (await bcrypt.compare(req.body.password, user.HASHED_PASSWORD)) {
-            const payload = {
-                role: user.ROLE,
-                username: user.USERNAME,
-                password: user.HASHED_PASSWORD,
-            };
-            const accessToken = jwt.sign(
-                payload,
-                process.env.ACCESS_TOKEN_SECRET
-            );
-            res.json({ msg: "Success", accessToken: accessToken });
-        } else {
-            res.json({ msg: "Not allowed" });
-        }
-    } catch (e) {
-        console.log(e);
-        res.status(500).send();
-    }
+	const users = (await authQueries.getUsers()).data;
+	const user = users.find(
+		(user) =>
+			user.ROLE == req.body.role && // I can make this where the req does not have to have a role
+			user.USERNAME == req.body.username
+	);
+	if (user == null) {
+		return res.status(400).send("Cannot find user");
+	}
+	try {
+		if (await bcrypt.compare(req.body.password, user.HASHED_PASSWORD)) {
+			const payload = {
+				role: user.ROLE,
+				username: user.USERNAME,
+				password: user.HASHED_PASSWORD,
+			};
+			const accessToken = jwt.sign(
+				payload,
+				process.env.ACCESS_TOKEN_SECRET
+			);
+			if (user.ID)
+				res.json({
+					msg: "Success",
+					id: user.ID,
+					accessToken: accessToken,
+				});
+			else res.json({ msg: "Success", accessToken: accessToken });
+		} else {
+			res.json({ msg: "Not allowed" });
+		}
+	} catch (e) {
+		console.log(e);
+		res.status(500).send();
+	}
 });
 
 router.get("/auth/check-admin", authenticateToken(["admin"]), (req, res) => {

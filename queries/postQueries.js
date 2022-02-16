@@ -79,7 +79,7 @@ async function insertIntoTable(tableName, body) {
         ) != null
     ) {
         // const username = body.name.split(" ").join("").toLowerCase();
-        const username = body.name.replace(/\s/g, "").toLowerCase();
+        const username = body.NAME.replace(/\s/g, "").toLowerCase();
         const password = username + Math.floor(Math.random() * 90 + 10);
         const hashedPassword = await bcrypt.hash(password, 10);
         const currentId = toBeReturned.ID;
