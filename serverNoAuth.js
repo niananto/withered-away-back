@@ -17,7 +17,7 @@ const patchQueries = require("./queries/patchQueries.js");
 const deleteQueries = require("./queries/deleteQueries.js");
 const authQueries = require("./queries/authQueries.js");
 
-const formateDate = require("./formateDate.js");
+const formatDate = require("./formatDate.js");
 
 /// express ===================================
 
@@ -89,9 +89,7 @@ router.get("/api/:tableName", async function (req, res) {
 router.post("/api/reg", async function (req, res) {
 	console.log("req", req.body);
 	if (req.body.birthday) {
-		req.body.birthday = formateDate.formateDate(
-			req.body.birthday.toString()
-		);
+		req.body.birthday = formatDate.formatDate(req.body.birthday.toString());
 	}
 	try {
 		return res.status(201).json(await postQueries.createUser(req.body));
@@ -107,6 +105,8 @@ router.patch(
 		const attrValue = req.params.attrValue;
 		const attribute = req.params.attribute;
 		const tableName = req.params.tableName;
+		req.body = formatDate.formatDates(req.body);
+
 		return res
 			.status(200)
 			.json(
@@ -130,15 +130,8 @@ router.delete("/api/:tableName/:id", async function (req, res) {
 
 router.post("/api/:tableName", async function (req, res) {
 	const tableName = req.params.tableName;
-	if (req.body.BIRTHDAY) {
-		req.body.BIRTHDAY = formateDate.formateDate(
-			req.body.BIRTHDAY.toString()
-		);
-	} else if (req.body.BIRTHDATE) {
-		req.body.BIRTHDATE = formateDate.formateDate(
-			req.body.BIRTHDATE.toString()
-		);
-	}
+	req.body = formatDate.formatDates(req.body);
+
 	return res
 		.status(200)
 		.json(await postQueries.insertIntoTable(tableName, req.body));

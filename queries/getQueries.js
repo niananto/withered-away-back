@@ -50,7 +50,7 @@ async function joinTablesReturnSingleCustom(
 	attrValue
 ) {
 	const q = `SELECT * FROM ${tableName1} FULL JOIN ${tableName2} 
-                ON ${tableName1}.${attribute1}=${tableName2}.${attribute2} WHERE ${attribute3}=:1`;
+                ON ${tableName1}.${attribute1}=${tableName2}.${attribute2} WHERE ${tableName2}.${attribute3}=:1`;
 	const params = [attrValue];
 	return await query.db_query(q, params);
 }
