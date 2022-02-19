@@ -41,8 +41,23 @@ async function joinTablesReturnSingle(
 	return await query.db_query(q, params);
 }
 
+async function joinTablesReturnSingleCustom(
+	tableName1,
+	attribute1,
+	tableName2,
+	attribute2,
+	attribute3,
+	attrValue
+) {
+	const q = `SELECT * FROM ${tableName1} FULL JOIN ${tableName2} 
+                ON ${tableName1}.${attribute1}=${tableName2}.${attribute2} WHERE ${attribute3}=:1`;
+	const params = [attrValue];
+	return await query.db_query(q, params);
+}
+
 exports.getSingleRow = getSingleRow;
 exports.getSingleRowCustom = getSingleRowCustom;
 exports.getAllRow = getAllRow;
 exports.joinTables = joinTables;
 exports.joinTablesReturnSingle = joinTablesReturnSingle;
+exports.joinTablesReturnSingleCustom = joinTablesReturnSingleCustom;
