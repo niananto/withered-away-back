@@ -27,6 +27,17 @@ router.get("/api/:tableName/:id", async function (req, res) {
     return res.status(200).json(await getQueries.getSingleRow(tableName, id));
 });
 
+router.get("/api/:tableName/:attribute/:attrValue", async function (req, res) {
+	const attribute = req.params.attribute;
+	const attrValue = req.params.attrValue;
+	const tableName = req.params.tableName;
+	return res
+		.status(200)
+		.json(
+			await getQueries.getSingleRowCustom(tableName, attribute, attrValue)
+		);
+});
+
 router.get("/api/:tableName", async function (req, res) {
     const tableName = req.params.tableName;
     return res.status(200).json(await getQueries.getAllRow(tableName));
