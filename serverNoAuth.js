@@ -17,7 +17,7 @@ const patchQueries = require("./queries/patchQueries.js");
 const deleteQueries = require("./queries/deleteQueries.js");
 const authQueries = require("./queries/authQueries.js");
 
-const formatDate = require("./formatDate.js");
+const formateDate = require("./formateDate.js");
 
 /// express ===================================
 
@@ -86,11 +86,12 @@ router.get("/api/:tableName", async function (req, res) {
 //     });
 // });
 
-// open for all
 router.post("/api/reg", async function (req, res) {
 	console.log("req", req.body);
 	if (req.body.birthday) {
-		req.body.birthday = formatDate.formatDate(req.body.birthday.toString());
+		req.body.birthday = formateDate.formateDate(
+			req.body.birthday.toString()
+		);
 	}
 	try {
 		return res.status(201).json(await postQueries.createUser(req.body));
@@ -102,13 +103,10 @@ router.post("/api/reg", async function (req, res) {
 
 router.patch(
 	"/api/:tableName/:attribute/:attrValue",
-	authenticateToken(["admin", "people", "doctor"]),
 	async function (req, res) {
 		const attrValue = req.params.attrValue;
 		const attribute = req.params.attribute;
 		const tableName = req.params.tableName;
-		req.body = formatDate.formatDates(req.body);
-
 		return res
 			.status(200)
 			.json(
@@ -122,30 +120,29 @@ router.patch(
 	}
 );
 
-router.delete(
-	"/api/:tableName/:id",
-	authenticateToken(["admin"]),
-	async function (req, res) {
-		const tableName = req.params.tableName;
-		const id = req.params.id;
-		return res
-			.status(200)
-			.json(await deleteQueries.deleteUserCascade(tableName, id));
-	}
-);
+router.delete("/api/:tableName/:id", async function (req, res) {
+	const tableName = req.params.tableName;
+	const id = req.params.id;
+	return res
+		.status(200)
+		.json(await deleteQueries.deleteUserCascade(tableName, id));
+});
 
-router.post(
-	"/api/:tableName",
-	authenticateToken(["admin", "people"]),
-	async function (req, res) {
-		const tableName = req.params.tableName;
-		req.body = formatDate.formatDates(req.body);
-
-		return res
-			.status(200)
-			.json(await postQueries.insertIntoTable(tableName, req.body));
+router.post("/api/:tableName", async function (req, res) {
+	const tableName = req.params.tableName;
+	if (req.body.BIRTHDAY) {
+		req.body.BIRTHDAY = formateDate.formateDate(
+			req.body.BIRTHDAY.toString()
+		);
+	} else if (req.body.BIRTHDATE) {
+		req.body.BIRTHDATE = formateDate.formateDate(
+			req.body.BIRTHDATE.toString()
+		);
 	}
-);
+	return res
+		.status(200)
+		.json(await postQueries.insertIntoTable(tableName, req.body));
+});
 
 router.get(
 	"/api/:tableName1/:attribute1/:tableName2/:attribute2",
@@ -250,46 +247,46 @@ router.post("/auth/users/login", async (req, res) => {
 });
 
 router.get("/auth/check-admin", authenticateToken(["admin"]), (req, res) => {
-    return res.status(200).json(req.msg);
+	return res.status(200).json(req.msg);
 });
 
 router.get("/auth/check-people", authenticateToken(["people"]), (req, res) => {
-    return res.status(200).json(req.msg);
+	return res.status(200).json(req.msg);
 });
 
 router.get("/auth/check-doctor", authenticateToken(["doctor"]), (req, res) => {
-    return res.status(200).json(req.msg);
+	return res.status(200).json(req.msg);
 });
 
 router.get("/auth/check-staff", authenticateToken(["staff"]), (req, res) => {
-    return res.status(200).json(req.msg);
+	return res.status(200).json(req.msg);
 });
 
 function authenticateToken(roles) {
-    return (req, res, next) => {
-        try {
-            const authHeader = req.headers["authorization"];
-            const token = authHeader && authHeader.split(" ")[1];
-            if (token == null) return res.sendStatus(401);
+	return (req, res, next) => {
+		try {
+			const authHeader = req.headers["authorization"];
+			const token = authHeader && authHeader.split(" ")[1];
+			if (token == null) return res.sendStatus(401);
 
-            jwt.verify(
-                token,
-                process.env.ACCESS_TOKEN_SECRET,
-                (err, payload) => {
-                    if (err) return res.sendStatus(403);
-                    const roleMatch = roles.find(
-                        (role) => role == payload.role
-                    );
-                    if (roleMatch == null) return res.sendStatus(403);
-                    req.msg = "welcome " + payload.role;
-                    next();
-                }
-            );
-        } catch (e) {
-            console.log(e);
-            res.status(500).send();
-        }
-    };
+			jwt.verify(
+				token,
+				process.env.ACCESS_TOKEN_SECRET,
+				(err, payload) => {
+					if (err) return res.sendStatus(403);
+					const roleMatch = roles.find(
+						(role) => role == payload.role
+					);
+					if (roleMatch == null) return res.sendStatus(403);
+					req.msg = "welcome " + payload.role;
+					next();
+				}
+			);
+		} catch (e) {
+			console.log(e);
+			res.status(500).send();
+		}
+	};
 }
 
 //// server ====================================
@@ -299,5 +296,5 @@ app.use(router);
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, function () {
-    console.log(`server started at port ${PORT}`);
+	console.log(`server started at port ${PORT}`);
 });
