@@ -9,13 +9,17 @@ function formatDate(value) {
 function formatDates(reqBody) {
 	if (reqBody.BIRTHDAY) {
 		reqBody.BIRTHDAY = formatDate(reqBody.BIRTHDAY.toString());
-	} else if (reqBody.BIRTHDATE) {
+	}
+	if (reqBody.BIRTHDATE) {
 		reqBody.BIRTHDATE = formatDate(reqBody.BIRTHDATE.toString());
-	} else if (reqBody.APPOINTED_DATE) {
+	}
+	if (reqBody.APPOINTED_DATE) {
 		reqBody.APPOINTED_DATE = formatDate(reqBody.APPOINTED_DATE.toString());
-	} else if (reqBody.ISSUE_DATE) {
+	}
+	if (reqBody.ISSUE_DATE) {
 		reqBody.ISSUE_DATE = formatDate(reqBody.ISSUE_DATE.toString());
-	} else if (reqBody.RETURN_DATE) {
+	}
+	if (reqBody.RETURN_DATE) {
 		reqBody.RETURN_DATE = formatDate(reqBody.RETURN_DATE.toString());
 	}
 
