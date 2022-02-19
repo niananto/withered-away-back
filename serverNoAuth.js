@@ -181,6 +181,32 @@ router.get(
 	}
 );
 
+router.get(
+	"/api/:tableName1/:attribute1/:tableName2/:attribute2/:attribute3/:attrValue",
+	async function (req, res) {
+		const tableName1 = req.params.tableName1;
+		const attribute1 = req.params.attribute1;
+		const tableName2 = req.params.tableName2;
+		const attribute2 = req.params.attribute2;
+		const attribute3 = req.params.attribute3;
+		const attrValue = req.params.attrValue;
+
+		return res
+			.status(200)
+			.json(
+				await getQueries.joinTablesReturnSingleCustom(
+					tableName1,
+					attribute1,
+					tableName2,
+					attribute2,
+					attribute3,
+					attrValue
+				)
+			);
+	}
+);
+
+
 //// auth ==================================
 
 router.get("/auth/users/all", async function (req, res) {
