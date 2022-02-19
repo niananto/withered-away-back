@@ -128,6 +128,25 @@ router.delete("/api/:tableName/:id", async function (req, res) {
 		.json(await deleteQueries.deleteUserCascade(tableName, id));
 });
 
+router.delete(
+	"/api/:tableName/:attribute/:attrValue",
+	async function (req, res) {
+		const tableName = req.params.tableName;
+		const attribute = req.params.attribute;
+		const attrValue = req.params.attrValue;
+		return res
+			.status(200)
+			.json(
+				await deleteQueries.deleteUserCascadeCustom(
+					tableName,
+					attribute,
+					attrValue
+				)
+			);
+	}
+);
+
+
 router.post("/api/:tableName", async function (req, res) {
 	const tableName = req.params.tableName;
 	req.body = formatDate.formatDates(req.body);

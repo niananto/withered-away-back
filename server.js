@@ -134,6 +134,24 @@ router.delete(
 	}
 );
 
+router.delete(
+	"/api/:tableName/:attribute/:attrValue",
+	async function (req, res) {
+		const tableName = req.params.tableName;
+		const attribute = req.params.attribute;
+		const attrValue = req.params.attrValue;
+		return res
+			.status(200)
+			.json(
+				await deleteQueries.deleteUserCascadeCustom(
+					tableName,
+					attribute,
+					attrValue
+				)
+			);
+	}
+);
+
 router.post(
 	"/api/:tableName",
 	authenticateToken(["admin", "people"]),
