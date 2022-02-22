@@ -104,10 +104,21 @@ router.patch(
 	async function (req, res) {
 		const peopleId = req.params.peopleId;
 		const doctorId = req.params.doctorId;
+		const appointedDate = formatDate.formatDate(
+			req.body.appointedDate.toString()
+		);
+		const reason = req.body.reason;
 
 		return res
 			.status(200)
-			.json(await patchQueries.reqAppointment(peopleId, doctorId));
+			.json(
+				await patchQueries.reqAppointment(
+					appointedDate,
+					peopleId,
+					doctorId,
+					reason
+				)
+			);
 	}
 );
 
@@ -167,7 +178,7 @@ router.delete(
 		return res
 			.status(200)
 			.json(
-				await deleteQueries.deleteUserCascadeCustom(
+				await deleteQueries.deleteTableRowCustom(
 					tableName,
 					attribute,
 					attrValue

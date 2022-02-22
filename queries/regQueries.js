@@ -63,14 +63,14 @@ async function insertMedicalInfo(reg, currentPeopleId) {
 	for (let medicine of Object.values(reg.medicines)) {
 		if (medicine.name.trim() === "") continue;
 		let q3 = `BEGIN
-                    INSERT_INTO_MEDICINE(:1, :2);   
+                    INSERT_INTO_MEDICINE(:1);   
                 END;`;
-		let params3 = [medicine.name, medicine.time];
+		let params3 = [medicine.name];
 
 		let q4 = `INSERT INTO TAKES_MEDICINE
-            (PEOPLE_ID, MEDICINE_ID) VALUES
-            (:1, (SELECT ID FROM MEDICINE WHERE NAME LIKE :2))`;
-		let params4 = [currentPeopleId, medicine.name];
+            (PEOPLE_ID, MEDICINE_ID, TIME) VALUES
+            (:1, (SELECT ID FROM MEDICINE WHERE NAME LIKE :2), :3)`;
+		let params4 = [currentPeopleId, medicine.name, medicine.time];
 
 		await query.db_query(q3, params3);
 		await query.db_query(q4, params4);

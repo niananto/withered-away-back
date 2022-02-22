@@ -22,7 +22,7 @@ async function getAllRow(tableName) {
 }
 
 async function joinTables(tableName1, attribute1, tableName2, attribute2) {
-	const q = `SELECT * FROM ${tableName1} FULL JOIN ${tableName2} 
+	const q = `SELECT * FROM ${tableName1} JOIN ${tableName2} 
                 ON ${tableName1}.${attribute1}=${tableName2}.${attribute2}`;
 	const params = [];
 	return await query.db_query(q, params);
@@ -35,7 +35,7 @@ async function joinTablesReturnSingle(
 	attribute2,
 	attrValue
 ) {
-	const q = `SELECT * FROM ${tableName1} FULL JOIN ${tableName2} 
+	const q = `SELECT * FROM ${tableName1} JOIN ${tableName2} 
                 ON ${tableName1}.${attribute1}=${tableName2}.${attribute2} WHERE ${attribute1}=:1`;
 	const params = [attrValue];
 	return await query.db_query(q, params);
@@ -49,7 +49,7 @@ async function joinTablesReturnSingleCustom(
 	attribute3,
 	attrValue
 ) {
-	const q = `SELECT * FROM ${tableName1} FULL JOIN ${tableName2} 
+	const q = `SELECT * FROM ${tableName1} JOIN ${tableName2} 
                 ON ${tableName1}.${attribute1}=${tableName2}.${attribute2} WHERE ${tableName2}.${attribute3}=:1`;
 	const params = [attrValue];
 	return await query.db_query(q, params);
