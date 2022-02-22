@@ -100,6 +100,36 @@ router.post("/api/reg", async function (req, res) {
 });
 
 router.patch(
+	"/api/reqappointment/:peopleId/:doctorId",
+	async function (req, res) {
+		const peopleId = req.params.peopleId;
+		const doctorId = req.params.doctorId;
+
+		return res
+			.status(200)
+			.json(await patchQueries.reqAppointment(peopleId, doctorId));
+	}
+);
+
+router.patch("/api/issuebook/:peopleId/:bookId", async function (req, res) {
+	const peopleId = req.params.peopleId;
+	const bookId = req.params.bookId;
+	const issueDate = req.body.issueDate;
+	const returnDate = req.body.returnDate;
+
+	return res
+		.status(200)
+		.json(
+			await patchQueries.issueBook(
+				peopleId,
+				bookId,
+				issueDate,
+				returnDate
+			)
+		);
+});
+
+router.patch(
 	"/api/:tableName/:attribute/:attrValue",
 	async function (req, res) {
 		const attrValue = req.params.attrValue;
@@ -125,7 +155,7 @@ router.delete("/api/:tableName/:id", async function (req, res) {
 	const id = req.params.id;
 	return res
 		.status(200)
-		.json(await deleteQueries.deleteUserCascade(tableName, id));
+		.json(await deleteQueries.deleteTableRow(tableName, id));
 });
 
 router.delete(

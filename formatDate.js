@@ -22,6 +22,9 @@ function formatDates(reqBody) {
 	if (reqBody.RETURN_DATE) {
 		reqBody.RETURN_DATE = formatDate(reqBody.RETURN_DATE.toString());
 	}
+  if (reqBody.DONATING_DATE) {
+		reqBody.DONATING_DATE = formatDate(reqBody.DONATING_DATE.toString());
+  }
 
 	return reqBody;
 }
