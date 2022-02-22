@@ -99,34 +99,31 @@ router.post("/api/reg", async function (req, res) {
 	}
 });
 
-router.patch(
-	"/api/reqappointment/:peopleId/:doctorId",
-	async function (req, res) {
-		const peopleId = req.params.peopleId;
-		const doctorId = req.params.doctorId;
-		const appointedDate = formatDate.formatDate(
-			req.body.appointedDate.toString()
+router.patch("/api/reqappointment", async function (req, res) {
+	const peopleId = req.body.PEOPLE_ID;
+	const doctorId = req.body.DOCTOR_ID;
+	const appointedDate = formatDate.formatDate(
+		req.body.APPOINTED_DATE.toString()
+	);
+	const reason = req.body.REASON;
+
+	return res
+		.status(200)
+		.json(
+			await patchQueries.reqAppointment(
+				appointedDate,
+				peopleId,
+				doctorId,
+				reason
+			)
 		);
-		const reason = req.body.reason;
+});
 
-		return res
-			.status(200)
-			.json(
-				await patchQueries.reqAppointment(
-					appointedDate,
-					peopleId,
-					doctorId,
-					reason
-				)
-			);
-	}
-);
-
-router.patch("/api/issuebook/:peopleId/:bookId", async function (req, res) {
-	const peopleId = req.params.peopleId;
-	const bookId = req.params.bookId;
-	const issueDate = req.body.issueDate;
-	const returnDate = req.body.returnDate;
+router.patch("/api/issuebook", async function (req, res) {
+	const peopleId = req.body.PEOPLE_ID;
+	const bookId = req.body.BOOK_ID;
+	const issueDate = formatDate.formatDate(req.body.ISSUE_DATE.toString());
+	const returnDate = formatDate.formatDate(req.body.RETURN_DATE);
 
 	return res
 		.status(200)
