@@ -25,6 +25,9 @@ function formatDates(reqBody) {
   if (reqBody.DONATING_DATE) {
 		reqBody.DONATING_DATE = formatDate(reqBody.DONATING_DATE.toString());
   }
+  if (reqBody.TRX_DATE) {
+		reqBody.TRX_DATE = formatDate(reqBody.TRX_DATE.toString());
+  }
 
 	return reqBody;
 }
