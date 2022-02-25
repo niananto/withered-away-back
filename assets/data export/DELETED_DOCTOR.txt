@@ -1,0 +1,2 @@
+"ID"	"NAME"	"QUALIFICATION"	"HOSPITAL_NAME"	"PHONE_NO"	"EMAIL_ADDRESS"	"FEE"	"DELETED_ON"
+"555"	"John"	"MD"	"John hopkins"	"132424"	"jhhihin233@gmail.com"	"13141"	"15/2/2022 11:24:48"

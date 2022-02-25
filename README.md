@@ -45,7 +45,7 @@ SQL> grant dba to c##witheredaway;
 Grant succeeded.
 ```
 
-Open the newly created user in [Navicat](https://www.navicat.com/en/), [DataGrip](https://www.jetbrains.com/datagrip/download) or any other program you like or just use the terminal. You can either execute the `c##witheredaway.sql` or execute all the four of `create-table.sql`, `functions.sql`, `procedures.sql` & `triggers.sql`. The developer prefers it to do the later one.
+Open the newly created user in [Navicat](https://www.navicat.com/en/), [DataGrip](https://www.jetbrains.com/datagrip/download) or any other program you like or just use the terminal. You can either execute the `c##witheredaway.sql` or execute all the four of `create-table.sql`, `functions.sql`, `procedures.sql` & `triggers.sql`. The developer prefers it to do the later one. In the later case, you need to import data from the data export folder.
 
 ## Setting up .env
 

@@ -1,0 +1,4 @@
+"ID"	"MEMBERSHIP_TYPE"	"YEARLY_CHARGE"
+"1"	"basic"	"10000"
+"2"	"premium"	"30000"
+"3"	"gold"	"50000"

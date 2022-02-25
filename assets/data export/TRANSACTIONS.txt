@@ -1,0 +1,6 @@
+"ID"	"BANK_ACCOUNT_NO"	"PEOPLE_ID"	"TRX_TYPE"	"DETAILS"	"TRX_DATE"	"AMOUNT"	"IN_OUT"
+"210"	"E121331"	"280"	"BUYING FOOD"	"Buying Food kacchi,Cherry,Juice"	"25/2/2022 00:00:00"	"1069"	"OUT"
+"211"	"E121331"	"280"	"BUYING MEDICINE"	"Buying Medicine Dopaminee,Parasitamol,ACE,Seclo,NSAIDs,Insulin"	"25/2/2022 00:00:00"	"1648"	"OUT"
+"206"	"1214131"	"300"	"REQUESTING APPOINTMENT"	"Requested an Appointment with : Angela Gordon"	"25/2/2022 17:17:31"	"1078"	"OUT"
+"208"	"1214131"	"300"	"REJECTING APPOINTMENT"	"Rejected your requested Appointment : Angela Gordon"	"25/2/2022 17:19:15"	"1078"	"IN"
+"209"	"1214131"	"300"	"REQUESTING APPOINTMENT"	"Requested an Appointment with : Angela Gordon"	"25/2/2022 17:19:50"	"1078"	"OUT"

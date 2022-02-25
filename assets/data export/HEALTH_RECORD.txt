@@ -1,0 +1,8 @@
+"ID"	"PEOPLE_ID"	"HEIGHT"	"WEIGHT"	"BLOOD_GROUP"	"VACCINE"	"DISABILITY"	"HEALTH_CONDITION"	"ALLERGY"
+"1"	"1"	"176"	"72"	"A+VE"	"COVID, RUBELLA, NIPA"		"BEST"	"None"
+"180"	"280"	"167"	"67"	"O+"	" , Covid , Hepatitis"	" , Breathing Problem"	"BEST"	" , Shrimp , beef , heat , metal"
+"200"	"300"	"167"	"61"	"O+"	" Covid ,  Nipa"	" Breathing problem ,  Lungs problem"	"BEST"	" Shrimp ,  Heat ,  Corn"
+"201"	"301"	"167"	"61"	"O+"	" , Covid , Nipa"	" , Breathing problem , Lungs problem"	"BEST"	" , Shrimp , Heat , Corn"
+"120"	"220"	"111"	"222"	"AB+"	"dhuro"	" , nai amar kichu"	"BAD"	" , ajob to, nai kichu"
+"140"	"240"	"176"	"67"	"A+"	" , Covid , hepatitis B"	" , None"	"BEST"	" , Shrimp"
+"160"	"260"	"173"	"55"	"AB+"	" , Covid"		"BEST"	
