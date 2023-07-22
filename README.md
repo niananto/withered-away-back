@@ -86,4 +86,4 @@ ACCESS_TOKEN_SECRET=0ad4a54899a691e87a5d687a6208208d1c2398ec45534d467d88a61fcc3f
 
 ## APIs
 
-Get a full documentation [here](https://documenter.getpostman.com/view/12189344/UVkpQGUF).
+Get a full documentation [here](https://documenter.getpostman.com/view/12189344/2s946mZA2L).
